@@ -18,22 +18,24 @@ public class BatFollower : MonoBehaviour
     private bool ballHit;
     private bool batMove;
     private int count;
+    private PhysicMaterial batPhysicMat;
 
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
         sliderValues = GameObject.Find("Canvas").GetComponent<SliderText>();
         rightHand = GameObject.Find("HandRight");
+        batPhysicMat = gameObject.GetComponent<Collider>().material;
     }
 
     private void Update()
     {
-        
-
-
-        sensitivity = sliderValues.SensitivitySlider.value;
+        sensitivity = sliderValues.sensitivitySlider.value;
         batSpeed = sliderValues.batSpeedSlider.value;
         rb.velocity = Vector3.ClampMagnitude(rb.velocity, batSpeed);
+        batPhysicMat.bounciness = sliderValues.batBounceSlider.value;
+        batPhysicMat.staticFriction = sliderValues.batStaticSlider.value;
+        batPhysicMat.dynamicFriction = sliderValues.batDynamicSlider.value;
     }
 
     private void FixedUpdate()

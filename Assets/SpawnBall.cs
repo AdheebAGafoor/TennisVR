@@ -21,17 +21,19 @@ public class SpawnBall : MonoBehaviour
 
     private void Update()
     {
-        
-
         if (spawnedBall)
         {
             spawnedBall.GetComponent<Rigidbody>().mass = sliderValues.massSlider.value;
             spawnedBall.GetComponent<BallForce>().ballSpeed = sliderValues.ballSpeedSlider.value;
             spawnedBall.GetComponent<Collider>().material.bounciness = sliderValues.bounceSlider.value;
+            spawnedBall.GetComponent<Collider>().material.staticFriction = sliderValues.ballStaticSlider.value;
+            spawnedBall.GetComponent<Collider>().material.dynamicFriction = sliderValues.ballDynamicSlider.value;
             spawnedBall.GetComponent<Rigidbody>().drag = sliderValues.dragSlider.value;
             
         }
         planePhysicMaterial.bounciness = sliderValues.groundBounceSlider.value;
+        planePhysicMaterial.staticFriction = sliderValues.groundStaticSlider.value;
+        planePhysicMaterial.dynamicFriction = sliderValues.groundDynamicSlider.value;
 
         
     }
