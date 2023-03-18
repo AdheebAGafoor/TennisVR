@@ -8,6 +8,8 @@ TagManager:
   - Ball
   - Left Hand
   - Serve
+  - Start
+  - End
   layers:
   - Default
   - TransparentFX
