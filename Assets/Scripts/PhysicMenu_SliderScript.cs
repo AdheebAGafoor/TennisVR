@@ -2,7 +2,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 
-public class SliderText : MonoBehaviour
+public class PhysicMenu_SliderScript : MonoBehaviour
 {
     /// TextMeshProUGUI Here__________________
     public TextMeshProUGUI groundBounceText;

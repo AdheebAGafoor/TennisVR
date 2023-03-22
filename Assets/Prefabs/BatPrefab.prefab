@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: -6215328133114712517}
   - component: {fileID: -3708257115705544579}
   - component: {fileID: -4575498870057409569}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: BatPrefab
   m_TagString: Bat
   m_Icon: {fileID: 0}
@@ -30,8 +30,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4931729197856943337}
   m_LocalRotation: {x: -0.37516493, y: 0.37357932, z: 0.59991324, w: 0.5998283}
-  m_LocalPosition: {x: 0.023, y: 0.79307, z: -7.6225}
-  m_LocalScale: {x: 0.11313448, y: 0.012594372, z: 0.11313447}
+  m_LocalPosition: {x: 0.023002, y: 0.79307, z: -7.6225}
+  m_LocalScale: {x: 0.11313448, y: 0.010613151, z: 0.11313447}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -52,7 +52,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4931729197856943337}
-  m_Enabled: 0
+  m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -98,7 +98,7 @@ MeshCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 4
-  m_Convex: 1
+  m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -5495902117074765545, guid: 088151e6f897bbf4d93e51e6874f18a0, type: 3}
 --- !u!114 &-6215328133114712517
@@ -140,7 +140,7 @@ Rigidbody:
   m_Drag: 0
   m_AngularDrag: 0
   m_UseGravity: 1
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 2

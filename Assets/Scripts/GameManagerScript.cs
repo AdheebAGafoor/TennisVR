@@ -5,32 +5,52 @@ public class GameManagerScript : MonoBehaviour
 {
     public GameObject[] pathObjects;
     public GameObject Line;
+    public GameObject arrowMark;
 
-    private static int active, i, resetCount;
+    public GameObject foreHandLow;
+    public GameObject foreHandHigh;
+
+    public static int active, i, resetCount;
     public static bool completeCalled;
 
     public TextMeshProUGUI shotImpressionText;
 
+
     private void Update()
     {
+        if (foreHandHigh.activeInHierarchy && !completeCalled)
+        {
+            for (int i = 0; i < 6; i++)
+            {
+                pathObjects[i] = foreHandHigh.transform.GetChild(1).transform.GetChild(i).gameObject;
+            }
+            arrowMark = foreHandHigh.transform.GetChild(2).gameObject;
+            Line = foreHandHigh.transform.GetChild(0).gameObject;
+        }
+        if (foreHandLow.activeInHierarchy && !completeCalled)
+        {
+            for (int i = 0; i < 6; i++)
+            {
+                pathObjects[i] = foreHandLow.transform.GetChild(1).transform.GetChild(i).gameObject;
+            }
+            arrowMark = foreHandLow.transform.GetChild(2).gameObject;
+            Line = foreHandLow.transform.GetChild(0).gameObject;
+        }
 
-        if (SpawnBall.resetPressed || Input.GetKeyDown(KeyCode.Space))
+        if (BallSpawn_Script.resetPressed || Input.GetKeyDown(KeyCode.Space))
         {
             if (completeCalled || resetCount == 3)
             {
                 ResetButtonPressed();
-                SpawnBall.resetPressed = false;
+                BallSpawn_Script.resetPressed = false;
             }
         }
-
-
         if (BatFollower.completed && !BatFollower.timeUp)
         {
             Completed();
             completeCalled = true;
             BatFollower.completed = false;
         }
-
         if (BatFollower.timeUp)
         {
             Completed();
@@ -65,15 +85,17 @@ public class GameManagerScript : MonoBehaviour
                     pathObjects[i].SetActive(true);
                 }
             }
-
+            arrowMark.SetActive(true);
             Line.SetActive(true);
         }
         completeCalled = false;
         BatFollower.lastHit = 0;
     }
 
+
     public void Completed()
     {
+        arrowMark.SetActive(false);
         Line.SetActive(false);
         for (i = 0; i < 6; i++)
         {

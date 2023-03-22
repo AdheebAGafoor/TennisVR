@@ -3,12 +3,12 @@ using UnityEngine;
 
 public class BatFollower : MonoBehaviour
 {
-    private BatBoxCollider _batFollower;
+    private Bat_PrefabScript _batFollower;
     private Rigidbody rb;
     private Vector3 velocity;
 
     public float batSpeed = 17;
-    private SliderText sliderValues;
+    private PhysicMenu_SliderScript sliderValues;
     public float sensitivity = 85f;
     private PhysicMaterial batPhysicMat;
 
@@ -24,7 +24,7 @@ public class BatFollower : MonoBehaviour
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
-        sliderValues = GameObject.Find("Canvas").GetComponent<SliderText>();
+        sliderValues = GameObject.FindObjectOfType<PhysicMenu_SliderScript>();
         batPhysicMat = gameObject.GetComponent<Collider>().material;
 
         gameManager = GameObject.FindObjectOfType<GameManagerScript>();
@@ -58,7 +58,7 @@ public class BatFollower : MonoBehaviour
 
     }
 
-    public void SetFollowTarget(BatBoxCollider batFollower)
+    public void SetFollowTarget(Bat_PrefabScript batFollower)
     {
         _batFollower = batFollower;
     }

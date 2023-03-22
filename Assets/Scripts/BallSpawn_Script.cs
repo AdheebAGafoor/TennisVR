@@ -2,26 +2,30 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class SpawnBall : MonoBehaviour
+public class BallSpawn_Script : MonoBehaviour
 {
-    public GameObject ball;
     private Vector3 spawnPoint;
     public InputActionProperty holdGripButton;
     public InputActionProperty ballDestroyButton;
     private bool holded;
     public GameObject spawnedBall;
-    public SliderText sliderValues;
+    public PhysicMenu_SliderScript sliderValues;
     public PhysicMaterial planePhysicMaterial;
-    public BatBoxCollider batScript;
+    public Bat_PrefabScript batScript;
 
     public static bool resetPressed;
+
+    private void Start()
+    {
+        sliderValues = GameObject.FindObjectOfType<PhysicMenu_SliderScript>();
+    }
 
     private void Update()
     {
         if (spawnedBall)
         {
             spawnedBall.GetComponent<Rigidbody>().mass = sliderValues.massSlider.value;
-            spawnedBall.GetComponent<BallForce>().ballSpeed = sliderValues.ballSpeedSlider.value;
+            spawnedBall.GetComponent<BallScript>().ballSpeed = sliderValues.ballSpeedSlider.value;
             spawnedBall.GetComponent<Collider>().material.bounciness = sliderValues.bounceSlider.value;
             spawnedBall.GetComponent<Collider>().material.staticFriction = sliderValues.ballStaticSlider.value;
             spawnedBall.GetComponent<Collider>().material.dynamicFriction = sliderValues.ballDynamicSlider.value;
@@ -31,8 +35,6 @@ public class SpawnBall : MonoBehaviour
         planePhysicMaterial.bounciness = sliderValues.groundBounceSlider.value;
         planePhysicMaterial.staticFriction = sliderValues.groundStaticSlider.value;
         planePhysicMaterial.dynamicFriction = sliderValues.groundDynamicSlider.value;
-
-        
     }
 
     private void FixedUpdate()
@@ -58,22 +60,11 @@ public class SpawnBall : MonoBehaviour
         }
     }
 
-    IEnumerator waitBeforeDestroy()
-    {
-        yield return new WaitForSeconds(1);
-    }
-
     IEnumerator holdButton()
     {
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.75f);
 
         spawnedBall.transform.position = spawnPoint;
         spawnedBall.GetComponent<Rigidbody>().velocity = Vector3.zero;
-    }
-
-    public void BallInstantiate()
-    {
-        spawnedBall = Instantiate(ball, spawnPoint, Quaternion.identity);
-        holded = false;
     }
 }

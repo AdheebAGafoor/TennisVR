@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class CheckCollider : MonoBehaviour
+public class LeftHand_ColliderScript : MonoBehaviour
 {
     public bool leftHand;
     private void OnTriggerEnter(Collider other)

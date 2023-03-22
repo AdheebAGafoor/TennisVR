@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 using TMPro;
 
-public class BallForce : MonoBehaviour
+public class BallScript : MonoBehaviour
 {
     public Rigidbody rb;
     public Vector3 addForceVector;
@@ -17,9 +17,9 @@ public class BallForce : MonoBehaviour
     public Transform head;
     public TextMeshProUGUI countTextMesh;
     public GameObject CountCanvas;
-    private SpawnBall spawnBallScript;
+    private BallSpawn_Script spawnBallScript;
 
-    private CheckCollider checkColliderScript;
+    private LeftHand_ColliderScript checkColliderScript;
 
     void Awake()
     {
@@ -32,8 +32,8 @@ public class BallForce : MonoBehaviour
         CountCanvas = GameObject.Find("Count");
         countTextMesh = GameObject.Find("CountText").GetComponent<TextMeshProUGUI>();
         head = GameObject.Find("Main Camera").GetComponent<Transform>();
-        spawnBallScript = GameObject.Find("Left Hand Model").GetComponent<SpawnBall>();
-        checkColliderScript = GameObject.Find("Left Hand").GetComponent<CheckCollider>();
+        spawnBallScript = GameObject.Find("Left Hand Model").GetComponent<BallSpawn_Script>();
+        checkColliderScript = GameObject.Find("Left Hand").GetComponent<LeftHand_ColliderScript>();
     }
 
     void Update()
