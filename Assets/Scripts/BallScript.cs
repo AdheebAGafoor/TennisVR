@@ -6,20 +6,25 @@ public class BallScript : MonoBehaviour
 {
     public Rigidbody rb;
     public Vector3 addForceVector;
-    private bool ballStill, ballTouchedGround, inHand;
+    private bool ballStill, ballTouchedGround;
+    public static bool inHand;
     public bool leftHand;
+    public bool batHit;
     private int count;
 
     public float radius = 0.5f;
     public float airDensity = 0.1f;
+    public float angVelocity = 15;
 
     public float ballSpeed = 15;
+    public float magnusForceValue = 3;
     public Transform head;
     public TextMeshProUGUI countTextMesh;
     public GameObject CountCanvas;
     private BallSpawn_Script spawnBallScript;
 
     private LeftHand_ColliderScript checkColliderScript;
+    private bool slowMotion;
 
     void Awake()
     {
@@ -34,10 +39,22 @@ public class BallScript : MonoBehaviour
         head = GameObject.Find("Main Camera").GetComponent<Transform>();
         spawnBallScript = GameObject.Find("Left Hand Model").GetComponent<BallSpawn_Script>();
         checkColliderScript = GameObject.Find("Left Hand").GetComponent<LeftHand_ColliderScript>();
+        rb.maxAngularVelocity = 10;
     }
 
     void Update()
     {
+
+        if (slowMotion)
+        {
+            StartCoroutine(SlowTime());
+            Time.timeScale = 0.15f;
+        }
+        else
+        {
+            Time.timeScale = 1;
+        }
+
         leftHand = checkColliderScript.leftHand;
         rb.velocity = Vector3.ClampMagnitude(rb.velocity, ballSpeed);
     }
@@ -60,7 +77,7 @@ public class BallScript : MonoBehaviour
             }
         }
 
-        if (count > 1)
+        if (count > 2)
         {
             CountCanvas.SetActive(true);
             countTextMesh.text = count.ToString();
@@ -82,9 +99,9 @@ public class BallScript : MonoBehaviour
                 if (rb.velocity.y > (2 * rb.velocity.x) && rb.velocity.y > (2 * rb.velocity.z))
                 {
                     /// Either limit velocity to y axis OR add force as impulse ---------
-                    rb.velocity = new Vector3(0, rb.velocity.y*2, 0);
-                    //rb.AddForce(new Vector3(0, 5, 0), ForceMode.Impulse);
+                    rb.velocity = new Vector3(0, rb.velocity.y + (rb.velocity.y/20), 0);
                     inHand = false;
+                    //rb.AddForce(new Vector3(0, 5, 0), ForceMode.Impulse);
                 }
             }
         }
@@ -94,9 +111,19 @@ public class BallScript : MonoBehaviour
         }
 
         /// For Spins --------
-        //var direction = Vector3.Cross(rb.angularVelocity, rb.velocity);
-        //var magnitude = 4 / 3f * Mathf.PI * airDensity * Mathf.Pow(radius, 3);
-        //rb.AddForce(magnitude * direction);
+        if (batHit)
+        {
+            var direction = Vector3.Cross(rb.angularVelocity, rb.velocity);         
+            var magnitude = 4 / 3f * Mathf.PI * airDensity * Mathf.Pow(radius, 3);      
+            rb.AddForce(((magnitude/100)* magnusForceValue) * direction);       
+        }
+    }
+
+    IEnumerator SlowTime()
+    {
+        yield return new WaitForSeconds(0.25f);
+
+        slowMotion = false;
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -104,21 +131,25 @@ public class BallScript : MonoBehaviour
         if (collision.collider.CompareTag("Untagged"))
         {
             inHand = false;
+            batHit = false;
         }
 
         if (collision.collider.CompareTag("Bat"))
         {
             inHand = false;
+            batHit = true;
         }
         
         if (collision.collider.CompareTag("Finish"))
         {
+            batHit = false;
             count = 0;
             inHand = false;
         }
 
         if (collision.collider.CompareTag("Respawn"))
         {
+            batHit = false;
             inHand = false;
             count = 0;
             ballTouchedGround = true;
@@ -143,6 +174,15 @@ public class BallScript : MonoBehaviour
         if (collision.collider.CompareTag("Bat"))
         {
             count++;
+        }
+
+        if (rb.useGravity == false)
+        {
+            if (collision.collider.CompareTag("Bat"))
+            {
+                rb.useGravity = true;
+                slowMotion = true;
+            }
         }
     }
 }

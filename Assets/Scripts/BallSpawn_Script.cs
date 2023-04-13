@@ -22,19 +22,10 @@ public class BallSpawn_Script : MonoBehaviour
 
     private void Update()
     {
-        if (spawnedBall)
+        if (BallScript.inHand)
         {
-            spawnedBall.GetComponent<Rigidbody>().mass = sliderValues.massSlider.value;
-            spawnedBall.GetComponent<BallScript>().ballSpeed = sliderValues.ballSpeedSlider.value;
-            spawnedBall.GetComponent<Collider>().material.bounciness = sliderValues.bounceSlider.value;
-            spawnedBall.GetComponent<Collider>().material.staticFriction = sliderValues.ballStaticSlider.value;
-            spawnedBall.GetComponent<Collider>().material.dynamicFriction = sliderValues.ballDynamicSlider.value;
-            spawnedBall.GetComponent<Rigidbody>().drag = sliderValues.dragSlider.value;
-            
+            UpdatePhysicValue();
         }
-        planePhysicMaterial.bounciness = sliderValues.groundBounceSlider.value;
-        planePhysicMaterial.staticFriction = sliderValues.groundStaticSlider.value;
-        planePhysicMaterial.dynamicFriction = sliderValues.groundDynamicSlider.value;
     }
 
     private void FixedUpdate()
@@ -46,18 +37,35 @@ public class BallSpawn_Script : MonoBehaviour
             resetPressed = true;
         }
 
-        if (holdGripButton.action.ReadValue<float>() == 1)
+        if (!GameManagerScript.pathActive)
         {
-            if (!holded)
+            if (holdGripButton.action.ReadValue<float>() == 1)
             {
-                holded = true;
-                StartCoroutine(holdButton());
+                if (!holded)
+                {
+                    holded = true;
+                    StartCoroutine(holdButton());
+                }
+            }
+            else
+            {
+                holded = false;
             }
         }
-        else
-        {
-            holded = false;
-        }
+    }
+
+    void UpdatePhysicValue()
+    {
+        spawnedBall.GetComponent<Rigidbody>().mass = sliderValues.massSlider.value;
+        spawnedBall.GetComponent<BallScript>().ballSpeed = sliderValues.ballSpeedSlider.value;
+        spawnedBall.GetComponent<BallScript>().magnusForceValue = sliderValues.ballSpeedSlider.value;
+        spawnedBall.GetComponent<Collider>().material.bounciness = sliderValues.bounceSlider.value;
+        //spawnedBall.GetComponent<Collider>().material.staticFriction = sliderValues.ballStaticSlider.value;
+        //spawnedBall.GetComponent<Collider>().material.dynamicFriction = sliderValues.ballDynamicSlider.value;
+        spawnedBall.GetComponent<Rigidbody>().drag = sliderValues.dragSlider.value;
+        planePhysicMaterial.bounciness = sliderValues.groundBounceSlider.value;
+        //planePhysicMaterial.staticFriction = sliderValues.groundStaticSlider.value;
+        //planePhysicMaterial.dynamicFriction = sliderValues.groundDynamicSlider.value;
     }
 
     IEnumerator holdButton()

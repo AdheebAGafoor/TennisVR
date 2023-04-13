@@ -1,3 +1,4 @@
+using System.Collections;
 using TMPro;
 using UnityEngine;
 
@@ -5,27 +6,66 @@ public class GameManagerScript : MonoBehaviour
 {
     public GameObject[] pathObjects;
     public GameObject Line;
-    public GameObject arrowMark;
+    //public GameObject arrowMark;
+    //public GameObject ballPrefab;
+
+    private Vector3 initialBallPosHigh;
+    private Vector3 initialBallPosLow;
 
     public GameObject foreHandLow;
     public GameObject foreHandHigh;
 
     public static int active, i, resetCount;
-    public static bool completeCalled;
+    public static bool completeCalled, pathActive;
 
     public TextMeshProUGUI shotImpressionText;
 
+    public GameObject[] stars;
+
+    public Transform head;
+    public Transform batNetPos;
+
+    private float height, length, forward;
+
+    public TextMeshProUGUI heightText;
+    public TextMeshProUGUI lengthText;
+    public TextMeshProUGUI forwardText;
+
+    private void Start()
+    {
+        stars[0].SetActive(false);
+        stars[1].SetActive(false);
+        stars[2].SetActive(false);
+        initialBallPosHigh = foreHandHigh.transform.GetChild(3).gameObject.transform.position;
+        initialBallPosLow = foreHandLow.transform.GetChild(3).gameObject.transform.position;
+    }
 
     private void Update()
     {
+        if (PhysicGame_MenuManager.setButtonPressed)
+        {
+            foreHandHigh.transform.position = new Vector3(batNetPos.transform.position.x - 3f, head.transform.position.y - 1f, foreHandHigh.transform.position.z);
+            foreHandLow.transform.position = new Vector3(batNetPos.transform.position.x - 2.1f, head.transform.position.y - 1.5f, foreHandLow.transform.position.z);
+            PhysicGame_MenuManager.setButtonPressed = false;
+        }
+        if (foreHandHigh.transform.parent.gameObject.activeInHierarchy)
+        {
+            pathActive = true;
+        }
+        if (!foreHandHigh.transform.parent.gameObject.activeInHierarchy)
+        {
+            pathActive = false;
+        }
+
         if (foreHandHigh.activeInHierarchy && !completeCalled)
         {
             for (int i = 0; i < 6; i++)
             {
                 pathObjects[i] = foreHandHigh.transform.GetChild(1).transform.GetChild(i).gameObject;
             }
-            arrowMark = foreHandHigh.transform.GetChild(2).gameObject;
+            //arrowMark = foreHandHigh.transform.GetChild(2).gameObject;
             Line = foreHandHigh.transform.GetChild(0).gameObject;
+            //ballPrefab = foreHandHigh.transform.GetChild(3).gameObject;
         }
         if (foreHandLow.activeInHierarchy && !completeCalled)
         {
@@ -33,8 +73,9 @@ public class GameManagerScript : MonoBehaviour
             {
                 pathObjects[i] = foreHandLow.transform.GetChild(1).transform.GetChild(i).gameObject;
             }
-            arrowMark = foreHandLow.transform.GetChild(2).gameObject;
+            //arrowMark = foreHandLow.transform.GetChild(2).gameObject;
             Line = foreHandLow.transform.GetChild(0).gameObject;
+            //ballPrefab = foreHandLow.transform.GetChild(3).gameObject;
         }
 
         if (BallSpawn_Script.resetPressed || Input.GetKeyDown(KeyCode.Space))
@@ -63,6 +104,10 @@ public class GameManagerScript : MonoBehaviour
     {
         resetCount++;
 
+        stars[0].SetActive(false);
+        stars[1].SetActive(false);
+        stars[2].SetActive(false);
+
         if (resetCount == 3)
         {
             shotImpressionText.text = "Congratulations";
@@ -85,17 +130,40 @@ public class GameManagerScript : MonoBehaviour
                     pathObjects[i].SetActive(true);
                 }
             }
-            arrowMark.SetActive(true);
+            //arrowMark.SetActive(true);
             Line.SetActive(true);
         }
         completeCalled = false;
         BatFollower.lastHit = 0;
+        if (resetCount != 3)
+        {
+            if (foreHandHigh.activeInHierarchy)
+            {
+                //ballPrefab.GetComponent<Rigidbody>().velocity = Vector3.zero;
+                //ballPrefab.GetComponent<Rigidbody>().useGravity = false;
+                //ballPrefab.transform.position = initialBallPosHigh;
+            }
+            else if (foreHandLow.activeInHierarchy)
+            {
+                //ballPrefab.GetComponent<Rigidbody>().velocity = Vector3.zero;
+                //ballPrefab.GetComponent<Rigidbody>().useGravity = false;
+                //ballPrefab.transform.position = initialBallPosLow;
+            }
+        }
     }
 
+    IEnumerator StarsTimer()
+    {
+        yield return new WaitForSeconds(1f);
+
+        stars[0].SetActive(false);
+        stars[1].SetActive(false);
+        stars[2].SetActive(false);
+    }
 
     public void Completed()
     {
-        arrowMark.SetActive(false);
+        //arrowMark.SetActive(false);
         Line.SetActive(false);
         for (i = 0; i < 6; i++)
         {
@@ -108,26 +176,127 @@ public class GameManagerScript : MonoBehaviour
             if (active > 5)
             {
                 shotImpressionText.text = "GREAT !!!";
+                stars[0].SetActive(true);
+                stars[1].SetActive(true);
+                stars[2].SetActive(true);
             }
             else if (active > 3)
             {
                 shotImpressionText.text = "GOOD !!!";
+                stars[0].SetActive(true);
+                stars[1].SetActive(true);
+                stars[2].SetActive(false);
             }
             else if (active < 3)
             {
                 shotImpressionText.text = "POOR !!!";
+                stars[0].SetActive(false);
+                stars[1].SetActive(false);
+                stars[2].SetActive(false);
             }
             else if (active == 3)
             {
                 shotImpressionText.text = "AVERAGE !!!";
+                stars[0].SetActive(true);
+                stars[1].SetActive(false);
+                stars[2].SetActive(false);
             }
 
             shotImpressionText.text += " Press X Button On Left Controller";
+
+            if (stars[0].activeInHierarchy || stars[1].activeInHierarchy || stars[2].activeInHierarchy)
+            {
+                StartCoroutine(StarsTimer());
+            }
 
             active = 0;
             BatFollower.hitStarted = false;
             BatFollower.hit = false;
             BatFollower.hitFinished = false;
+        }
+    }
+
+    public void HeightNve()
+    {
+        height -= 0.1f;
+        heightText.text = height.ToString();
+        if (foreHandHigh.activeInHierarchy)
+        {
+            foreHandHigh.transform.position = new Vector3(foreHandHigh.transform.position.x, foreHandHigh.transform.position.y - 0.1f, foreHandHigh.transform.position.z);
+        }
+        if (foreHandLow.activeInHierarchy)
+        {
+            foreHandLow.transform.position = new Vector3(foreHandLow.transform.position.x, foreHandLow.transform.position.y - 0.1f, foreHandLow.transform.position.z);
+        }
+    }
+
+    public void HeightPve()
+    {
+        height += 0.1f;
+        heightText.text = height.ToString();
+        if (foreHandHigh.activeInHierarchy)
+        {
+            foreHandHigh.transform.position = new Vector3(foreHandHigh.transform.position.x, foreHandHigh.transform.position.y + 0.1f, foreHandHigh.transform.position.z);
+        }
+        if (foreHandLow.activeInHierarchy)
+        {
+            foreHandLow.transform.position = new Vector3(foreHandLow.transform.position.x, foreHandLow.transform.position.y + 0.1f, foreHandLow.transform.position.z);
+        }
+    }
+
+    public void LengthNve()
+    {
+        length -= 0.1f;
+        lengthText.text = length.ToString();
+        if (foreHandHigh.activeInHierarchy)
+        {
+            foreHandHigh.transform.position = new Vector3(foreHandHigh.transform.position.x - 0.1f, foreHandHigh.transform.position.y, foreHandHigh.transform.position.z);
+        }
+        if (foreHandLow.activeInHierarchy)
+        {
+            foreHandLow.transform.position = new Vector3(foreHandLow.transform.position.x - 0.1f, foreHandLow.transform.position.y, foreHandLow.transform.position.z);
+        }
+    }
+
+    public void LengthPve()
+    {
+        length += 0.1f;
+        lengthText.text = length.ToString();
+        if (foreHandHigh.activeInHierarchy)
+        {
+            foreHandHigh.transform.position = new Vector3(foreHandHigh.transform.position.x + 0.1f, foreHandHigh.transform.position.y, foreHandHigh.transform.position.z);
+        }
+        if (foreHandLow.activeInHierarchy)
+        {
+            foreHandLow.transform.position = new Vector3(foreHandLow.transform.position.x + 0.1f, foreHandLow.transform.position.y, foreHandLow.transform.position.z);
+        }
+    }
+
+    public void ForwardNve()
+    {
+        forward -= 0.1f;
+        forwardText.text = forward.ToString();
+        if (foreHandHigh.activeInHierarchy)
+        {
+            foreHandHigh.transform.position = new Vector3(foreHandHigh.transform.position.x, foreHandHigh.transform.position.y, foreHandHigh.transform.position.z - 0.1f);
+        }
+        if (foreHandLow.activeInHierarchy)
+        {
+            foreHandLow.transform.position = new Vector3(foreHandLow.transform.position.x, foreHandLow.transform.position.y, foreHandLow.transform.position.z - 0.1f);
+        }
+    }
+
+    public void ForwardPve()
+    {
+        forward += 0.1f;
+        forwardText.text = forward.ToString();
+        if (foreHandHigh.activeInHierarchy)
+        {
+            foreHandHigh.transform.position = new Vector3(foreHandHigh.transform.position.x, foreHandHigh.transform.position.y, foreHandHigh.transform.position.z + 0.1f);
+        }
+        if (foreHandLow.activeInHierarchy)
+        {
+            foreHandLow.transform.position = new Vector3(foreHandLow.transform.position.x, foreHandLow.transform.position.y, foreHandLow.transform.position.z + 0.1f);
         }
     }
 }

@@ -26,18 +26,16 @@ public class BatFollower : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         sliderValues = GameObject.FindObjectOfType<PhysicMenu_SliderScript>();
         batPhysicMat = gameObject.GetComponent<Collider>().material;
-
         gameManager = GameObject.FindObjectOfType<GameManagerScript>();
     }
 
     private void Update()
     {
-        sensitivity = sliderValues.sensitivitySlider.value;
-        batSpeed = sliderValues.batSpeedSlider.value;
-        rb.velocity = Vector3.ClampMagnitude(rb.velocity, batSpeed);
-        batPhysicMat.bounciness = sliderValues.batBounceSlider.value;
-        batPhysicMat.staticFriction = sliderValues.batStaticSlider.value;
-        batPhysicMat.dynamicFriction = sliderValues.batDynamicSlider.value;
+        if (PhysicGame_MenuManager.physicBackButtonPressed)
+        {
+            UpdatePhysicValue();
+            PhysicGame_MenuManager.physicBackButtonPressed = false;
+        }
     }
 
     private void FixedUpdate()
@@ -53,14 +51,23 @@ public class BatFollower : MonoBehaviour
 
         Vector3 dest = _batFollower.transform.position;
         velocity = (dest - rb.transform.position) * sensitivity;
-
         rb.velocity = velocity;
-
     }
 
     public void SetFollowTarget(Bat_PrefabScript batFollower)
     {
         _batFollower = batFollower;
+    }
+
+    public void UpdatePhysicValue()
+    {
+        batSpeed = sliderValues.batSpeedSlider.value;
+        rb.velocity = Vector3.ClampMagnitude(rb.velocity, batSpeed);
+        batPhysicMat.bounciness = sliderValues.batBounceSlider.value;
+
+        //sensitivity = sliderValues.sensitivitySlider.value;
+        //batPhysicMat.staticFriction = sliderValues.batStaticSlider.value;
+        //batPhysicMat.dynamicFriction = sliderValues.batDynamicSlider.value;
     }
 
     IEnumerator PathHit()

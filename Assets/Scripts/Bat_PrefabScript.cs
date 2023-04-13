@@ -5,8 +5,7 @@ public class Bat_PrefabScript : MonoBehaviour
 {
     [SerializeField]
     private BatFollower batFollowerPrefab;
-    public int count;
-    
+    //public int count;
 
     private void SpawnBatFollowerPrefab()
     {
