@@ -44,8 +44,8 @@ public class GameManagerScript : MonoBehaviour
     {
         if (PhysicGame_MenuManager.setButtonPressed)
         {
-            foreHandHigh.transform.position = new Vector3(batNetPos.transform.position.x - 3f, head.transform.position.y - 1f, foreHandHigh.transform.position.z);
-            foreHandLow.transform.position = new Vector3(batNetPos.transform.position.x - 2.1f, head.transform.position.y - 1.5f, foreHandLow.transform.position.z);
+            foreHandHigh.transform.position = new Vector3(batNetPos.transform.position.x - 3f, head.transform.position.y - 1.25f, foreHandHigh.transform.position.z);
+            foreHandLow.transform.position = new Vector3(batNetPos.transform.position.x - 1.8f, head.transform.position.y - 1.5f, foreHandLow.transform.position.z);
             PhysicGame_MenuManager.setButtonPressed = false;
         }
         if (foreHandHigh.transform.parent.gameObject.activeInHierarchy)
